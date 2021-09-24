@@ -1,0 +1,56 @@
+import numpy as np
+
+class GiniIndex:
+    '''
+    Initializes instance of self that can compute information gained based
+    and will generate respective decision tree.
+    '''
+        
+    def __call__(self, attributes, labels):
+         
+        information_gain = self._information_gain(attributes, labels)
+
+        return np.argmax(information_gain)
+
+    def _information_gain(self, attributes, labels):
+        '''
+        Takes current entropy and returns column idx for next split
+        '''
+        
+        expected_gini_error = self._gini_index(labels)
+        expected_gini_errors = self._expected_gini_idx(attributes, labels)
+        information_gain = np.ones(len(expected_gini_errors))*\
+                        expected_gini_error - expected_gini_errors
+
+        return information_gain
+
+        
+    def _expected_gini_error(self, attributes, labels):
+        
+        gini_errors = []
+
+        for idx in range(attributes.shape[1]):
+            
+            values = set(attributes[:,idx].tolist())
+            gini_error = 0
+
+            for value in values:
+
+                value_idxs = np.where(attributes[:,idx] == value)[0]
+                gini_error += (value_idxs.shape[0] / labels.shape[0])\
+                                    * self._gini_error(labels[value_idxs])
+            
+            gini_errors.append(entropy)
+
+        return entropies
+
+    def _gini_idx(self, labels):
+        
+        options = set(labels.tolist())
+        label_probs = [np.count_nonzero(labels==option)/labels.shape[0] for \
+                                                            option in options]
+        squared_label_probs = [val**2 for val in label_probs]
+
+        gini_error = 1 - sum(squared_label_probs)
+        
+        return gini_error
