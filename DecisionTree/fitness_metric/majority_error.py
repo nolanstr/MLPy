@@ -17,39 +17,40 @@ class MajorityError:
         Takes current entropy and returns column idx for next split
         '''
         
-        expected_majority_error = self._entropy(labels)
-        expected_majority_errors = self._expected_entropy(attributes, labels)
-        information_gain = np.ones(len(expected_majority_errors))*\
-                        expected_majority_error - expected_majority_errors
+        expected_gini_error = self._gini_idx(labels)
+        expected_gini_errors = self._expected_gini_error(attributes, labels)
+        information_gain = np.ones(len(expected_gini_errors))*\
+                        expected_gini_error - expected_gini_errors
 
         return information_gain
 
         
-    def _expected_majority_error(self, attributes, labels):
+    def _expected_gini_error(self, attributes, labels):
         
-        majority_errors = []
+        gini_errors = []
 
         for idx in range(attributes.shape[1]):
             
             values = set(attributes[:,idx].tolist())
-            majority_error = 0
+            gini_error = 0
 
             for value in values:
 
                 value_idxs = np.where(attributes[:,idx] == value)[0]
-                majority_error += (value_idxs.shape[0] / labels.shape[0])\
-                                    * self._majority_error(labels[value_idxs])
+                gini_error += (value_idxs.shape[0] / labels.shape[0])\
+                                    * self._gini_idx(labels[value_idxs])
             
-            majority_errors.append(entropy)
+            gini_errors.append(gini_error)
 
-        return entropies
+        return gini_errors
 
-    def _majority_error(self, labels):
+    def _gini_idx(self, labels):
         
         options = set(labels.tolist())
         label_probs = [np.count_nonzero(labels==option)/labels.shape[0] for \
                                                             option in options]
-        majority_error = sum([prob*min(prob) for prob in label_probs])
-        
-        return majority_error
 
+        if len(label_probs) == 1:
+            return 0
+        else:
+            return min(label_probs) 

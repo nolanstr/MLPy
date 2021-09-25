@@ -17,8 +17,8 @@ class GiniIndex:
         Takes current entropy and returns column idx for next split
         '''
         
-        expected_gini_error = self._gini_index(labels)
-        expected_gini_errors = self._expected_gini_idx(attributes, labels)
+        expected_gini_error = self._gini_idx(labels)
+        expected_gini_errors = self._expected_gini_error(attributes, labels)
         information_gain = np.ones(len(expected_gini_errors))*\
                         expected_gini_error - expected_gini_errors
 
@@ -38,11 +38,11 @@ class GiniIndex:
 
                 value_idxs = np.where(attributes[:,idx] == value)[0]
                 gini_error += (value_idxs.shape[0] / labels.shape[0])\
-                                    * self._gini_error(labels[value_idxs])
+                                    * self._gini_idx(labels[value_idxs])
             
-            gini_errors.append(entropy)
+            gini_errors.append(gini_error)
 
-        return entropies
+        return gini_errors
 
     def _gini_idx(self, labels):
         

@@ -13,9 +13,10 @@ class Branch:
         self._leaf = False
 
         self.depth = len(self.path)
+        self._check_for_leaf(None)
         
     def split(self, fitness, max_depth):
-
+        print('split')
         if self._check_for_leaf(max_depth):
             return [deepcopy(self)]
         
@@ -40,7 +41,7 @@ class Branch:
         return new_branches
 
     def _check_for_leaf(self, max_depth):
-        
+         
         if np.all(self.labels == self.labels[0]):
 
             self._leaf = True
