@@ -16,12 +16,25 @@ class Branch:
         self._check_for_leaf(None)
         
     def split(self, fitness, max_depth):
-        print('split')
         if self._check_for_leaf(max_depth):
             return [deepcopy(self)]
         
-        split_attr_idx = fitness(self.attributes, self.labels)
         
+        fitness_eval = fitness(self.attributes, self.labels)
+        split_attr_idx = np.argmax(fitness_eval)
+        
+        if split_attr_idx in self.path:
+            sort_hi_low = np.flip(np.argsort(fitness_eval))
+            for index in sort_hi_low:
+                if index in self.path:
+                    continue
+                else:
+                    split_attr_idx = index
+                    break
+            if split_attr_idx in self.path:
+                self._leaf = True
+
+
         pos_values = list(set(self.attributes[:,split_attr_idx].tolist()))
         
         c_self = deepcopy(self)
@@ -37,7 +50,6 @@ class Branch:
                                        choices + [val],
                                        c_self.attributes[idxs,:], 
                                        c_self.labels[idxs]))
-
         return new_branches
 
     def _check_for_leaf(self, max_depth):
