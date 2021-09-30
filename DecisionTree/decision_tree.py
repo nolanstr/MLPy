@@ -28,9 +28,8 @@ class DecisionTree:
         '''
         self.branches.append(self.branches[0][0].split(self.fitness, max_depth))
         self._create_tree_dict()
-
         while self._check_branches():
-            
+
             next_level = []
 
             for branch in self.branches[-1]:
@@ -149,4 +148,7 @@ class DecisionTree:
                 else:
                     return int_dict[str(val)]
             except:
-                return int_dict['MCV']
+                try:
+                    return int_dict['MCV']
+                except:
+                    return None 

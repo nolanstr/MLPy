@@ -10,7 +10,7 @@ class Entropy:
     def __call__(self, attributes, labels):
          
         information_gain = self._information_gain(attributes, labels)
-        return np.argmax(information_gain)
+        return information_gain
 
     def _information_gain(self, attributes, labels):
         '''
