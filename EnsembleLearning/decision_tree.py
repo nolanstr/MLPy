@@ -6,22 +6,26 @@ from copy import deepcopy
 
 class DecisionTree:
 
-    def __init__(self, attributes, labels, fitness, D=None):
+    def __init__(self, data, fitness, D=None):
         '''
         attributes --> shape=(n,m)
         labels --> shape=(n,1)
         '''
+        self.attributes = data[0]
+        self.labels = data[1]
+
         try:
-            labels = labels.flatten()
+            self.labels = self.labels.flatten()
         except:
             pass
-        self.attributes = attributes
-        self.labels = labels
+        
         self.fitness = fitness
+        
         if D is None:
             D = np.ones((self.attributes.shape[0],1))
+        
         self.D = D
-        self.branches = [[Branch([], [], attributes, labels, self.D)]]
+        self.branches = [[Branch([], [], data[0], data[1], self.D)]]
 
     def __call__(self, max_depth=None):
         '''
