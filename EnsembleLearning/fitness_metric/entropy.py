@@ -1,4 +1,5 @@
 import numpy as np
+from numba import jit
 
 class Entropy:
     '''
@@ -18,11 +19,10 @@ class Entropy:
         Takes current entropy and returns column idx for next split
         '''
         
-        expected_entropy = self._entropy(labels, D)
+        expected_entropy = _entropy(labels, D)
         expected_entropies = self._expected_entropy(attributes, labels, D)
-        information_gain = np.ones(len(expected_entropies))*\
-                                        expected_entropy - expected_entropies
-
+        information_gain = expected_entropy - expected_entropies
+        
         return information_gain
 
         
@@ -32,25 +32,32 @@ class Entropy:
 
         for idx in range(attributes.shape[1]):
             
-            values = set(attributes[:,idx].tolist())
+            values = np.unique(attributes[:,idx])
             entropy = 0
 
             for value in values:
-                #focus on updates here
+
                 value_idxs = np.where(attributes[:,idx] == value)[0]
-                entropy += (value_idxs.shape[0] / labels.shape[0])\
-                                        * self._entropy(labels[value_idxs], 
+                #entropy += (np.sum(D[value_idxs]) / np.sum(D)) \
+                #                        * _entropy(labels[value_idxs], 
+                #                                        D[value_idxs])
+                entropy += (value_idxs.shape[0] / D.shape[0]) \
+                                        * _entropy(labels[value_idxs], 
                                                         D[value_idxs])
             entropies.append(entropy)
 
         return entropies
 
-    def _entropy(self, labels, D):
-        
-        options = set(labels.tolist())
-        label_probs = [np.sum(D[np.where(labels==option)])/np.sum(D) for \
-                                                    option in options]
-        entropy = sum([-prob*np.log2(prob) for prob in label_probs])
-        
-        return entropy
+#@jit
+def _entropy(labels, D):
+    
+    options = np.unique(labels)
+    idxs = [np.where(labels==option) for option in options]
+    
+    D_norm = np.sum(D)
+
+    label_probs = np.array([D[idx].sum() / D_norm for idx in  idxs])
+    entropy = np.sum(-label_probs*np.log2(label_probs))
+    
+    return entropy
 

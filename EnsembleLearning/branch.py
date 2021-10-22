@@ -22,7 +22,6 @@ class Branch:
         
         fitness_eval = fitness(self.attributes, self.labels, self.D)
         split_attr_idx = np.argmax(fitness_eval)
-        
         if split_attr_idx in self.path:
             sort_hi_low = np.flip(np.argsort(fitness_eval))
             for index in sort_hi_low:
@@ -33,7 +32,6 @@ class Branch:
                     break
             if split_attr_idx in self.path:
                 self._leaf = True
-
 
         pos_values = list(set(self.attributes[:,split_attr_idx].tolist()))
         
@@ -56,7 +54,6 @@ class Branch:
     def _check_for_leaf(self, max_depth):
          
         if np.all(self.labels == self.labels[0]):
-
             self._leaf = True
             self._leaf_value = self.labels[0]
             return True
@@ -70,8 +67,16 @@ class Branch:
         if self.depth == max_depth:
             self._leaf = True
             vals, counts = np.unique(self.labels, return_counts=True)
-            self._leaf_value = vals[np.argmax(counts)]
+            weights = np.zeros(vals.shape[0])
+            
+            for i, val in enumerate(vals):
+                
+                weights[i] += np.sum(self.D[np.where(self.labels==val)])
+
+            self._leaf_value = vals[np.argmax(weights)]
+
             return True
+
         vals, counts = np.unique(self.labels, return_counts=True)
         self._leaf_value = vals[np.argmax(counts)]
 
