@@ -4,7 +4,7 @@ import sys
 sys.path.append('../../')
 sys.path.append('..\..')
 
-from MLPy.EnsembleLearning.bagging import Bagging
+from MLPy.EnsembleLearning.random_tree import RandomTree
 from MLPy.EnsembleLearning.fitness_metric.entropy import Entropy
 
 
@@ -17,20 +17,20 @@ def bridge(seed):
     test_attr, test_labels = np.load('./bank/clean_test_attr.npy'), \
                                 np.load('./bank/clean_test_labels.npy')
     fitness = Entropy()
-    T = 200 
+    T = 200
     np.random.seed(seed)
     idxs = np.random.randint(low=0, high=train_attr.shape[0], size=1000)
-    bag = Bagging((train_attr[idxs,:], train_labels[idxs]), fitness, T)
-    bag()
-    #error_train = bag.find_all_bagging_errors()
-    #error_test = bag.find_test_bagging_errors((test_attr[idxs,:], 
+    rt = RandomTree((train_attr[idxs,:], train_labels[idxs]), fitness, T, 4)
+    rt()
+    #error_train = bag.find_all_RandomTree_errors()
+    #error_test = bag.find_test_RandomTree_errors((test_attr[idxs,:], 
     #                                                test_labels[idxs]))
     test_data = (test_attr, test_labels)
 
     pred = np.zeros((T, test_labels.shape[0])).astype('<U13')
     for i in range(T):
         
-        pred[i] = bag._get_predictions(test_data, i)
+        pred[i] = rt._get_predictions(test_data, i)
         print(np.unique(pred[i]))
     bin_pred = np.copy(pred)
     

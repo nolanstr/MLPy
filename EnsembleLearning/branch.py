@@ -3,7 +3,7 @@ from copy import deepcopy
 
 class Branch:
 
-    def __init__(self, path, choices, attributes, labels, D):
+    def __init__(self, path, choices, attributes, labels, D, subset_size):
 
         self.path = path
         self.choices = choices
@@ -11,6 +11,11 @@ class Branch:
         self.labels = labels
         self.D = D 
         self._leaf = False
+        self.subset_size = subset_size
+        
+        rnd_idxs = np.random.choice(self.attributes.shape[1], self.subset_size, 
+                                                    replace=False)
+        self.rnd_idxs = rnd_idxs
 
         self.depth = len(self.path)
         self._check_for_leaf(None)
@@ -21,10 +26,14 @@ class Branch:
             return [deepcopy(self)]
         
         fitness_eval = fitness(self.attributes, self.labels, self.D)
-        split_attr_idx = np.argmax(fitness_eval)
+        ranked_rnd_idxs = np.flip(
+                    self.rnd_idxs[np.argsort(fitness_eval[self.rnd_idxs])])
+
+        split_attr_idx = ranked_rnd_idxs[0] 
+
         if split_attr_idx in self.path:
-            sort_hi_low = np.flip(np.argsort(fitness_eval))
-            for index in sort_hi_low:
+            
+            for index in ranked_rnd_idxs:
                 if index in self.path:
                     continue
                 else:
@@ -48,7 +57,8 @@ class Branch:
                                        choices + [val],
                                        c_self.attributes[idxs,:], 
                                        c_self.labels[idxs],
-                                       c_self.D[idxs]))
+                                       c_self.D[idxs],
+                                       c_self.subset_size))
         return new_branches
 
     def _check_for_leaf(self, max_depth):

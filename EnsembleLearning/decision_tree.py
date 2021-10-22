@@ -6,7 +6,7 @@ from copy import deepcopy
 
 class DecisionTree:
 
-    def __init__(self, data, fitness, D=None):
+    def __init__(self, data, fitness, D=None, subset_size=None):
         '''
         attributes --> shape=(n,m)
         labels --> shape=(n,1)
@@ -23,9 +23,13 @@ class DecisionTree:
         
         if D is None:
             D = np.ones((self.attributes.shape[0],1))
-        
+        if subset_size is None:
+            seubset_size = self.attributes.shape[1]
+
         self.D = D
-        self.branches = [[Branch([], [], data[0], data[1], self.D)]]
+        self.subset_size = subset_size
+        self.branches = [[Branch([], [], data[0], data[1], 
+                                        self.D, self.subset_size)]]
 
     def __call__(self, max_depth=None):
         '''

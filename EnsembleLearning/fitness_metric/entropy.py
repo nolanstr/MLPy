@@ -11,7 +11,7 @@ class Entropy:
     def __call__(self, attributes, labels, D):
          
         information_gain = self._information_gain(attributes, labels, D)
-
+        
         return information_gain
 
     def _information_gain(self, attributes, labels, D):
