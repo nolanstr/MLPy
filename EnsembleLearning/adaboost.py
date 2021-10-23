@@ -127,6 +127,21 @@ class AdaBoost:
             errors[i] = np.count_nonzero(ave_predict[i] != data[1]) /\
                                     data[1].shape[0]
         return errors
+
+    def find_pure_test_adaboost_errors(self, data):
+        
+        predictions = np.zeros(self.predictions.shape).astype('<U13')
+
+        for row in range(predictions.shape[0]):
+
+            predictions[row] = self._get_predictions(data, row)
+
+        errors = np.zeros(predictions.shape[0])
+
+        for i in range(errors.shape[0]):
+            errors[i] = np.count_nonzero(predictions[i] != data[1]) /\
+                                    data[1].shape[0]
+        return errors
         
         
     

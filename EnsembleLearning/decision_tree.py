@@ -24,7 +24,7 @@ class DecisionTree:
         if D is None:
             D = np.ones((self.attributes.shape[0],1))
         if subset_size is None:
-            seubset_size = self.attributes.shape[1]
+            subset_size = self.attributes.shape[1]
 
         self.D = D
         self.subset_size = subset_size

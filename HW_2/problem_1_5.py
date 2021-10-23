@@ -32,7 +32,9 @@ print('optimal solution, part c')
 x = np.hstack((np.ones((x.shape[0],1)), x))
 
 w_star = np.matmul(np.linalg.inv(np.matmul(x.T,x)), np.matmul(x.T,y))
-
+print('asdfasdfasdf')
+print(x.shape)
+print(y.shape)
 print(w_star)
 
 

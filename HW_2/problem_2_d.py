@@ -17,7 +17,7 @@ fitness = Entropy()
 colors = ['r','b','g']
 
 for i, ss in enumerate([2,4,6]):
-    T = 500 
+    T = 200 
     subset_size = ss
 
     rt = RandomTree((train_attr, train_labels), fitness, T, subset_size)

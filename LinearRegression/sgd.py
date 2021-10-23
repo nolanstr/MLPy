@@ -1,7 +1,7 @@
 import numpy as np
 from .cost_function import J, DJ
 
-class BatchGradient:
+class SGD:
 
     def __init__(self, x, y, w, r):
         
@@ -16,7 +16,9 @@ class BatchGradient:
         
         #while self.costs[-1] > tol:
         for _ in range(10000):
-            dJ = self.r * DJ(self.x, self.y, self.w)
+            idx = np.random.randint(low=0, high=self.x.shape[0],size=1)[0]
+            dJ = (self.r * DJ(self.x[idx,:].reshape((1, self.x.shape[1])),
+                                    self.y[idx], self.w))
             self.w -= dJ 
             self.costs.append(J(self.x, self.y, self.w)) 
             print(self.costs[-1])

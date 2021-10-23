@@ -3,7 +3,12 @@ from copy import deepcopy
 
 class Branch:
 
-    def __init__(self, path, choices, attributes, labels, D, subset_size):
+    def __init__(self, path, choices, attributes, labels, D, subset_size, 
+                                            a_idxs=None):
+        
+
+        if a_idxs is None:
+            a_idxs = np.arange(attributes.shape[1])
 
         self.path = path
         self.choices = choices
@@ -12,22 +17,29 @@ class Branch:
         self.D = D 
         self._leaf = False
         self.subset_size = subset_size
-        
-        rnd_idxs = np.random.choice(self.attributes.shape[1], self.subset_size, 
+        self.a_idxs = a_idxs
+        try:
+            rnd_idxs = np.random.choice(self.a_idxs, self.subset_size, 
                                                     replace=False)
-        self.rnd_idxs = rnd_idxs
+        except:
+            rnd_idxs = False
 
+        self.rnd_idxs = rnd_idxs
+        
         self.depth = len(self.path)
         self._check_for_leaf(None)
         
     def split(self, fitness, max_depth):
 
-        if self._check_for_leaf(max_depth):
+        if self._check_for_leaf(max_depth) or self.rnd_idxs is False:
             return [deepcopy(self)]
         
         fitness_eval = fitness(self.attributes, self.labels, self.D)
-        ranked_rnd_idxs = np.flip(
+        try:
+            ranked_rnd_idxs = np.flip(
                     self.rnd_idxs[np.argsort(fitness_eval[self.rnd_idxs])])
+        except:
+            import pdb;pdb.set_trace()
 
         split_attr_idx = ranked_rnd_idxs[0] 
 
@@ -48,6 +60,7 @@ class Branch:
         path = c_self.path
         choices = c_self.choices
         new_branches = []
+        new_a_idxs = self.a_idxs[self.a_idxs != split_attr_idx]
 
         for val in pos_values:
             
@@ -58,7 +71,8 @@ class Branch:
                                        c_self.attributes[idxs,:], 
                                        c_self.labels[idxs],
                                        c_self.D[idxs],
-                                       c_self.subset_size))
+                                       c_self.subset_size,
+                                       a_idxs=new_a_idxs))
         return new_branches
 
     def _check_for_leaf(self, max_depth):
