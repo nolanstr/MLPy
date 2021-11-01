@@ -23,7 +23,7 @@ error_train = ab.find_all_adaboost_errors()
 error_test = ab.find_test_adaboost_errors((test_attr, test_labels))
 
 plt.plot(np.arange(T), ab.errors, label='Train Error')
-plt.plot(np.arange(T), ab.fin_pute_test_adaboost_error((test_attr, test_labels)), 
+plt.plot(np.arange(T), ab.find_pure_test_adaboost_errors((test_attr, test_labels)), 
                                         label='Test Error')
 plt.ylabel('Error')
 plt.xlabel('T')

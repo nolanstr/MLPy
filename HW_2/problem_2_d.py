@@ -17,7 +17,7 @@ fitness = Entropy()
 colors = ['r','b','g']
 
 for i, ss in enumerate([2,4,6]):
-    T = 200 
+    T = 250
     subset_size = ss
 
     rt = RandomTree((train_attr, train_labels), fitness, T, subset_size)
@@ -25,12 +25,13 @@ for i, ss in enumerate([2,4,6]):
     error_train = rt.find_all_random_tree_errors()
     error_test = rt.find_test_random_tree_errors((test_attr, test_labels))
 
-    plt.plot(np.arange(T), error_train, colors[i], label='Train Error')
-    plt.plot(np.arange(T), error_test, colors[i], label='Test Error')
+    plt.plot(np.arange(T), error_train, colors[i], label='Train/Test Error:' +
+            str(ss))
+    plt.plot(np.arange(T), error_test, colors[i])
     plt.ylabel('Error')
     plt.xlabel('T')
-
-plt.savefig('RandomTree'+str(subset_size)+'.png')
+plt.legend()
+plt.show()
 
 '''
 We need to make it so we can reevaluate RandomTree models on test data and not
