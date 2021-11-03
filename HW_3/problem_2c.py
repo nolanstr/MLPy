@@ -14,10 +14,5 @@ test_data = np.genfromtxt('bank-note/test.csv', delimiter=',')
 
 error = perceptron.calc_error(test_data[:,0:-1], test_data[:,-1])
 print('Average Test error:', error)
-print('Weight Vector: All values stored in w_values_problem_2c.txt')
-print('Counts Vector: All values stored in c_values_problem_2c.txt')
-np.savetxt('w_values_problem_2c.txt', np.array(perceptron.w).reshape((260,5)))
-np.savetxt('c_values_problem_2c.txt', np.array(perceptron.c))
-
-import pdb;pdb.set_trace()
+print('Average Weight Vector:', perceptron.a)
 

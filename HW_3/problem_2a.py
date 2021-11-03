@@ -15,5 +15,4 @@ test_data = np.genfromtxt('bank-note/test.csv', delimiter=',')
 error = perceptron.calc_error(test_data[:,0:-1], test_data[:,-1])
 print('Average Test error:', error)
 print('Weight Vector:', perceptron.w)
-import pdb;pdb.set_trace()
 

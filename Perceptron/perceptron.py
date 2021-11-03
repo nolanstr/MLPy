@@ -13,7 +13,7 @@ class Standard:
         self.labels[np.where(labels == 0)] = -1
         self.idxs = np.arange(self.fv.shape[0])
 
-    def __call__(self, T, r=0.5):
+    def __call__(self, T, r=0.01):
 
         np.random.shuffle(self.idxs)
 
@@ -21,7 +21,7 @@ class Standard:
         
         for i in range(T):
             
-            for xi, yi in zip(self.fv, self.labels):
+            for xi, yi in zip(self.fv[self.idxs,:], self.labels[self.idxs]):
 
                 pred = np.sign(np.matmul(self.w, xi)[0])
 
@@ -35,7 +35,6 @@ class Standard:
         labels[np.where(labels == 0)] = -1
 
         pred = np.sign(np.matmul(fv, self.w.T).flatten())
-        import pdb;pdb.set_trace()
         inc_pred = np.where(pred-labels != 0)[0].shape[0]
 
         return inc_pred / labels.shape[0]
@@ -64,7 +63,7 @@ class Voted:
 
         for i in range(T):
             
-            for xi, yi in zip(self.fv, self.labels):
+            for xi, yi in zip(self.fv[self.idxs, :], self.labels[self.idxs]):
 
                 pred = np.sign(np.matmul(self.w[-1], xi)[0])
 
@@ -78,7 +77,6 @@ class Voted:
         
         self.c = np.array(self.c)
 
-        import pdb;pdb.set_trace()
     
     def calc_error(self, fv, labels):
 
@@ -113,47 +111,33 @@ class Averaged:
 
         self.idxs = np.arange(self.fv.shape[0])
 
-    def __call__(self, T, r=0.5):
+    def __call__(self, T, r=0.2):
 
         np.random.shuffle(self.idxs)
 
-        self.w = [np.zeros(self.fv.shape[1]).reshape((1,-1))]
-        self.m = [np.zeros(self.fv.shape[1]).reshape((1,-1))]
-        self.c = [0]
+        self.w = np.zeros(self.fv.shape[1]).reshape((1,-1))
+        self.a = np.zeros(self.fv.shape[1]).reshape((1,-1))
 
         for i in range(T):
             
-            for xi, yi in zip(self.fv, self.labels):
+            for xi, yi in zip(self.fv[self.idxs, :], self.labels[self.idxs]):
 
-                pred = np.sign(np.matmul(self.w[-1], xi)[0])
+                pred = np.sign(np.matmul(self.w[-1], xi))#[0])
 
                 if pred != yi:
                     
-                    self.w.append(self.w[-1] + (r * xi * yi))
-                    self.c.append(1)
+                    self.w += (r * xi * yi)
 
-                else:
-                    self.c[-1] += 1
-        
-        self.c = np.array(self.c)
+                self.a += self.w
 
-        import pdb;pdb.set_trace()
-    
     def calc_error(self, fv, labels):
-
+        
         fv = np.hstack((np.ones((fv.shape[0],1)), fv))
         labels = labels 
         labels[np.where(labels == 0)] = -1
 
-        pred = np.array([np.matmul(fv,
-            self.w[i].T).flatten() for i in range(self.c.shape[0])])
+        pred = np.sign(np.matmul(fv, self.a.T).flatten())
+        inc_pred = np.where(pred-labels != 0)[0].shape[0]
 
-        for row in range(pred.shape[0]):
-            pred[row] *= self.c[row]
-        
-        voted_pred = np.sign(np.sum(pred, axis=0))
-        voted_pred[np.where(voted_pred == 0)] = -1
-        inc_pred = np.where(voted_pred - labels != 0)[0].shape[0] 
-        
         return inc_pred / labels.shape[0]
-
+    
