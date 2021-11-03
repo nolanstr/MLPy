@@ -13,7 +13,7 @@ from MLPy.Perceptron.perceptron import Standard
 After having imported this module, you will need to import data that can be
 split into feature values and labels. The shape of feature values should be
 (mxd) where m is the number of training examples and d is the dimensionality of
-the data. Labels should be a one dimensional array of length d.
+the data. Labels should be a one dimensional array of length m.
 
 Once this data is loaded and ogranized, initialize a single instance of the
 perceptron algorithm as is seen in the following line and run the perceptron by
