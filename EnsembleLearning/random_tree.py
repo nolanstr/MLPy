@@ -13,7 +13,6 @@ class RandomTree:
         self.alpha_vals = []
         self.m = self.data[0].shape[0]
         self.subset_size = subset_size
-        self.attr_size = self.data[0].shape[1]
 
     def __call__(self):
 
@@ -23,10 +22,13 @@ class RandomTree:
                     
             rnd_data = (self.data[0][idxs,:], self.data[1][idxs])
             
+            attr_subset = np.random.choice(self.data[0].shape[1],
+                                                self.subset_size,
+                                                replace=False)
 
             self.trees.append(DecisionTree(rnd_data,
                                            self.fitness,
-                                           subset_size=self.subset_size))
+                                           attr_subset=attr_subset))
 
             self.trees[-1]()
 

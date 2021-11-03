@@ -14,17 +14,14 @@ class SGD:
     def __call__(self, tol=10e-6):
         
         
-        #while self.costs[-1] > tol:
         for _ in range(10000):
             idx = np.random.randint(low=0, high=self.x.shape[0],size=1)[0]
             dJ = (self.r * DJ(self.x[idx,:].reshape((1, self.x.shape[1])),
                                     self.y[idx], self.w))
             self.w -= dJ 
             self.costs.append(J(self.x, self.y, self.w)) 
-            print(self.costs[-1])
             if self.costs[-1] < tol:
                 break
-            
     def compute_cost(self, x, y):
 
         return J(x, y, self.w)

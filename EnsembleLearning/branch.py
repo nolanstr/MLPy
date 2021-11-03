@@ -3,12 +3,7 @@ from copy import deepcopy
 
 class Branch:
 
-    def __init__(self, path, choices, attributes, labels, D, subset_size, 
-                                            a_idxs=None):
-        
-
-        if a_idxs is None:
-            a_idxs = np.arange(attributes.shape[1])
+    def __init__(self, path, choices, attributes, labels, D, attr_subset): 
 
         self.path = path
         self.choices = choices
@@ -16,43 +11,20 @@ class Branch:
         self.labels = labels
         self.D = D 
         self._leaf = False
-        self.subset_size = subset_size
-        self.a_idxs = a_idxs
-        try:
-            rnd_idxs = np.random.choice(self.a_idxs, self.subset_size, 
-                                                    replace=False)
-        except:
-            rnd_idxs = False
+        self.attr_subset = attr_subset
 
-        self.rnd_idxs = rnd_idxs
-        
         self.depth = len(self.path)
         self._check_for_leaf(None)
         
     def split(self, fitness, max_depth):
 
-        if self._check_for_leaf(max_depth) or self.rnd_idxs is False:
+        if self._check_for_leaf(max_depth):
             return [deepcopy(self)]
         
         fitness_eval = fitness(self.attributes, self.labels, self.D)
-        try:
-            ranked_rnd_idxs = np.flip(
-                    self.rnd_idxs[np.argsort(fitness_eval[self.rnd_idxs])])
-        except:
-            import pdb;pdb.set_trace()
-
-        split_attr_idx = ranked_rnd_idxs[0] 
-
-        if split_attr_idx in self.path:
-            
-            for index in ranked_rnd_idxs:
-                if index in self.path:
-                    continue
-                else:
-                    split_attr_idx = index
-                    break
-            if split_attr_idx in self.path:
-                self._leaf = True
+        allowable_idxs = np.array(list(set(self.attr_subset) - set(self.path)))
+        split_attr_idx = allowable_idxs[
+                    np.argmax(fitness_eval[allowable_idxs])] 
 
         pos_values = list(set(self.attributes[:,split_attr_idx].tolist()))
         
@@ -60,7 +32,6 @@ class Branch:
         path = c_self.path
         choices = c_self.choices
         new_branches = []
-        new_a_idxs = self.a_idxs[self.a_idxs != split_attr_idx]
 
         for val in pos_values:
             
@@ -71,8 +42,7 @@ class Branch:
                                        c_self.attributes[idxs,:], 
                                        c_self.labels[idxs],
                                        c_self.D[idxs],
-                                       c_self.subset_size,
-                                       a_idxs=new_a_idxs))
+                                       attr_subset=c_self.attr_subset))
         return new_branches
 
     def _check_for_leaf(self, max_depth):
@@ -81,8 +51,9 @@ class Branch:
             self._leaf = True
             self._leaf_value = self.labels[0]
             return True
-
-        if np.all(self.attributes == self.attributes[0,:]):
+        
+        if np.all(self.attributes == self.attributes[0,:]) \
+                or set(self.attr_subset) == set(self.path):
             self._leaf = True
             vals, counts = np.unique(self.labels, return_counts=True)
             self._leaf_value = vals[np.argmax(counts)]
