@@ -27,12 +27,9 @@ for c in C:
         pSVM(gamma=0.1, kernel='Gaussian')
 
         objs.append(copy.deepcopy(pSVM))
-        
         print(f'C: {c}')
         print(f'$\gamma$: {gamma}')
-        print(f'w_vec: {pSVM.w}')
-        print(f'bias: {pSVM.bias}')
         print(f'train error: {pSVM.train_error}')
         print(f'test error: {pSVM.test_error}')
+        print(f'Number of Support Vectors: {np.count_nonzero(pSVM.alpha)}')
 
-import pdb;pdb.set_trace()

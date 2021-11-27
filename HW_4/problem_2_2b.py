@@ -23,10 +23,9 @@ for c in C:
                      gamma_fnc)
 
     pSVM(100)
-    print(f'$bias + w_{0}$: {pSVM.w}')
+    print(f'bias + w_0: {pSVM.w}')
     print(f'train error: {pSVM.train_error[-1]}')
     print(f'test error: {pSVM.test_error[-1]}')
-import pdb;pdb.set_trace()
 
 
 '''

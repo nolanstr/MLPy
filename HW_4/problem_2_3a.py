@@ -29,4 +29,3 @@ for c in C:
     print(f'train error: {pSVM.train_error}')
     print(f'test error: {pSVM.test_error}')
 
-import pdb;pdb.set_trace()
