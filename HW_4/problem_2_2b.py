@@ -7,8 +7,8 @@ sys.path.append('..\..')
 from MLPy.SVM.svm import PrimalSVM
 
 y_0 = 1e-3
-a = 1e-4
-gamma_fnc = lambda i: y_0/ (1 + (y_0*i/a))
+a = 1e-3
+gamma_fnc = lambda i: y_0 / (1 + i)
 
 C = [100/873, 500/873, 700/873]
 
@@ -26,7 +26,6 @@ for c in C:
     print(f'$bias + w_{0}$: {pSVM.w}')
     print(f'train error: {pSVM.train_error[-1]}')
     print(f'test error: {pSVM.test_error[-1]}')
-
 import pdb;pdb.set_trace()
 
 

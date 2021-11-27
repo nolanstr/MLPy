@@ -13,8 +13,6 @@ class BatchGradient:
 
     def __call__(self, tol=10e-6):
         
-        
-        #while self.costs[-1] > tol:
         for _ in range(10000):
             dJ = self.r * DJ(self.x, self.y, self.w)
             self.w -= dJ 
