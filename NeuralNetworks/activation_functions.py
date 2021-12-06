@@ -8,11 +8,7 @@ def sigmoid(w, INPUT):
     w shape should match input shape
     '''
 
-    output = np.zeros(INPUT.shape)
-
-    for i, layer in enumerate(w):
-        
-        output[i] = 1 / (1 + np.exp(-np.dot(layer, INPUT)))
+    output = 1 / (1 + np.exp(-np.dot(w, INPUT.flatten())))
 
     return output
 

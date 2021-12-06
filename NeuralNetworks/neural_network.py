@@ -1,15 +1,17 @@
 import numpy as np
+import sys
+sys.path.append('../..')
+sys.path.append('..\..')
+from MLPy.NeuralNetworks.layer import HiddenLayer, FinalLayer
 
-from .layer import HiddenLayer, FirstLayer, FinalLayer
 
+class NeuralNetwork:
 
-def NeuralNetwork:
+    def __init__(self, x, y, learning_rate, nodes, hidden_layers=3):
 
-    def __init__(self, x, y, learning_rate, hidden_layers=3):
+        self.layers = [HiddenLayer(x.shape[1], nodes) for _ in \
+                    range(hidden_layers)] + [FinalLayer(x.shape[1], nodes)]
 
-        self.layers = [HiddenLayer(x.shape[0]) for _ in range(hidden_layers)] +\
-                            [FinalLayer(x.shape[0])]
-    
         self.learning_rate = learning_rate
         self.x_data = x
         self.y = y
@@ -22,7 +24,7 @@ def NeuralNetwork:
 
         for T in epochs:
             
-            for true, x in zip(self.y[idxs], self.x_data[idxs])
+            for true, x in zip(self.y[idxs], self.x_data[idxs]):
 
                 pred = self.forward_eval(x)
 
@@ -41,13 +43,16 @@ def NeuralNetwork:
         This will also need to compute the partials here by calling self.reverse
        _eval
         '''
+        ders = self.reverse_eval(pred, true)
+        
+        import pdb;pdb.set_trace()
 
     def forward_eval(self, x):
         
         for layer in self.layers:
-
+    
             x = layer.forward_eval_layer(x)
-        
+
         return x
 
 

@@ -11,13 +11,17 @@ reverse_eval_dict = {'SIGMOID':reverse_sigmoid}
 
 class HiddenLayer:
 
-    def __init__(self, size, activation='sigmoid'):
+    def __init__(self, input_size, nodes, activation='sigmoid'):
         
-        self.w = np.ones((size, size))
+        self.w = np.ones((nodes, input_size))
         self.forward_eval =  forward_eval_dict[activation.upper()]
         self.reverse_eval =  reverse_eval_dict[activation.upper()]
 
     def update_weights(self, w):
+
+        self.w = w
+
+    def set_weights(self, w):
 
         self.w = w
     
@@ -25,12 +29,12 @@ class HiddenLayer:
         '''
         Performs forward evaluation of a single layer.
         '''
-        OUPUT = np.zeros(INPUT.shape)
+        OUTPUT = np.ones(self.w.shape[1])
         
-        for i in range(INPUT.shape[0]):
-            
-            OUTPUT[i] = self.forward_eval(self.w[i], INPUT)
-        
+        for i in range(self.w.shape[0]):
+
+            OUTPUT[i+1] = self.forward_eval(self.w[i], INPUT)
+        print(OUTPUT)
         return OUTPUT
 
     def reverse_eval_layer(self, INPUT):
@@ -47,13 +51,15 @@ class HiddenLayer:
 
 class FinalLayer:
 
-    def __init__(self, size, activation='sigmoid'):
+    def __init__(self, input_size, nodes):
         
-        self.w = np.ones(size)
-        self.forward_eval =  forward_eval_dict[activation.upper()]
-        self.reverse_eval =  reverse_eval_dict[activation.upper()]
+        self.w = np.ones((1, input_size))
 
     def update_weights(self, w):
+
+        self.w = w
+
+    def set_weights(self, w):
 
         self.w = w
     
@@ -61,17 +67,17 @@ class FinalLayer:
         '''
         Performs forward evaluation of a single layer.
         '''
-        
+        import pdb;pdb.set_trace()            
         OUTPUT = np.dot(self.w, INPUT)
         
-        return OUTPUT
+        return np.sign(OUTPUT[0])
 
     def reverse_eval_layer(self, INPUT, pred, true):
         '''
         Performs reverse evaluation (derivation) of a single layer
-        This assumes a loss function of square loss
         '''
 
-        dels =  (pred - true) * INPUT 
+        dels = (pred - true) * INPUT 
         
         return dels
+
