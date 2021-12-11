@@ -16,8 +16,7 @@ class LogisticRegression:
         self.y = y
 
         if method.upper() == 'MAP':
-            #self.w = np.random.normal(loc=0.0, scale=std, size=x.shape[1])
-            self.w = np.zeros(x.shape[1])
+            self.w = np.random.normal(loc=0.0, scale=std, size=x.shape[1])
         else:
             self.w = np.random.normal(loc=0.0, scale=1, size=x.shape[1])
 
@@ -34,7 +33,7 @@ class LogisticRegression:
         
         for t in range(T):
             
-            #np.random.shuffle(self.idxs)
+            np.random.shuffle(self.idxs)
 
             for (xi,yi) in zip(self.x[self.idxs,:], self.y[self.idxs]):
                 dJdW = self.method.dJdW(xi.flatten(),yi,self.w,self.x.shape[0])
