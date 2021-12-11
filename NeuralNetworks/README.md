@@ -4,7 +4,7 @@ In order to run this NN package you will need to import
 the NN class. This is done in the following section of code.
 
 ```python
-from MLPy.NeuralNetworks.neural_network import NeuralNetworl
+from MLPy.NeuralNetworks.neural_network import NeuralNetwork
 ```
 
 Upon importing this class, you will need to load in your input train data in the
